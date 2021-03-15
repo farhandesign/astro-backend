@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
 
 	const newEventsModel = new EventsModel(formData);
 
-	newEventModel
+	newEventsModel
 		.save()
 		.then((dbDocument) => {
 			res.send(dbDocument);
