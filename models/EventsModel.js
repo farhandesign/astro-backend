@@ -1,6 +1,6 @@
 // Import Mongoose
 const mongoose = require('mongoose');
-const User = require('./UsersModel');
+const UsersModel = require('../models/UsersModel');
 
 // Schema
 const EventsSchema = new mongoose.Schema({
@@ -26,6 +26,10 @@ const EventsSchema = new mongoose.Schema({
 	dateCreated: {
 		type: Date,
 		default: Date.now
+	},
+	authorId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'UsersModel'
 	}
 });
 

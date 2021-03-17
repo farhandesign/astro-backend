@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const eventsRouter = require('./routes/events');
-const createEventRouter = require('./routes/create-event');
 const usersRouter = require('./routes/users');
 
 // Create Server Obj
@@ -40,8 +39,6 @@ server.get('/', (req, res) => {
 
 // Use Events Routes
 server.use('/events', eventsRouter);
-// Use Create Events Routes
-server.use('/create-event', createEventRouter);
 // Use Users Routes
 server.use('/users', usersRouter);
 
