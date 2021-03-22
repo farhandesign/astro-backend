@@ -2,6 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -26,6 +27,9 @@ mongoose
 	.catch(() => {
 		console.log('error occured', error);
 	});
+
+// Tell express  to allow CORS (cross origin resource sharing)
+server.use(cors());
 
 // Tell Express how to use body-parser
 server.use(bodyParser.urlencoded({ extended: false }));
