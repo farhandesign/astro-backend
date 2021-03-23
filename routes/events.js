@@ -20,7 +20,7 @@ router.get('/create-event', (req, res) => {
 });
 
 // Create An Event POST
-router.post('/create-event', authorize, (req, res) => {
+router.post('/create-event', (req, res) => {
 	const formData = {
 		name: req.body.name,
 		description: req.body.description,

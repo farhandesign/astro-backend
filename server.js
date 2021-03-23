@@ -72,7 +72,6 @@ mongoose
 // ****************
 // MIDDLEWARE
 // ****************
-
 // Tell express  to allow CORS (cross origin resource sharing)
 server.use(cors());
 // Tell Express how to use body-parser
