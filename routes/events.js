@@ -1,7 +1,7 @@
 // Route for Events Page
 const express = require('express');
 const router = express.Router();
-const authorize = require('../middleware/auth');
+const cloudinary = require('cloudinary').v2;
 const EventsModel = require('../models/EventsModel');
 
 // Get All the Events
@@ -20,18 +20,32 @@ router.get('/create-event', (req, res) => {
 });
 
 // Create An Event POST
-router.post('/create-event', (req, res) => {
+router.post('/create-event', async (req, res) => {
 	const formData = {
 		name: req.body.name,
 		description: req.body.description,
 		address: req.body.address,
-		eventImg: req.body.eventImg,
 		eventDate: req.body.eventDate,
 		authorId: req.user
 	};
-
+	// Create newEventsModel for saving the collection
 	const newEventsModel = new EventsModel(formData);
 
+	// Upload Events Image if files were sent
+	if (Object.values(req.files).length > 0) {
+		const files = Object.values(req.files);
+
+		// Image
+		await cloudinary.uploader.upload(files[0].path, (cloudinaryErr, cloudinaryResult) => {
+			if (cloudinaryErr) {
+				console.log(cloudinaryErr);
+			}
+			// Add the URL of the image to newEventsModel
+			newEventsModel.eventImg = cloudinaryResult.url;
+		});
+	}
+
+	// Save Event to Collection
 	newEventsModel
 		.save()
 		.then((dbDocument) => {
