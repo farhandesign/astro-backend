@@ -91,27 +91,6 @@ router.post('/login', async (req, res) => {
 			});
 		}
 	});
-
-	// // LETS VALIDATE THE DATA BEFORE WE SUBMIT A USER
-	// const { error } = loginValidation(req.body);
-	// if (error) {
-	// 	return res.status(400).send(error.details[0].message);
-	// }
-
-	// // Check if Email Exists
-	// const user = await UsersModel.findOne({ email: req.body.email });
-	// if (!user) {
-	// 	return res.status(400).send('Wrond Email or Password');
-	// }
-	// // Check if Password is Correct
-	// const validPass = await bcryptjs.compare(req.body.password, user.password);
-	// if (!validPass) {
-	// 	return res.status(400).send('Wrong Email or Password');
-	// }
-
-	// // Create and Assign A JSON WEB TOKEN
-	// const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-	// res.header('auth-token', token).send('Successfully Logged in!');
 });
 
 module.exports = router;
