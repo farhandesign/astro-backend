@@ -2,10 +2,12 @@
 const express = require('express');
 const bcryptjs = require('bcryptjs');
 const router = express.Router();
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
+// to read the jsonwebtoken
+const secret = process.env.SECRET;
 
 const UsersModel = require('../models/UsersModel');
-const { signupValidation, loginValidation } = require('../controllers/validation');
 
 // SIGN-UP
 router.post('/signup', (req, res) => {
@@ -51,30 +53,44 @@ router.post('/signup', (req, res) => {
 
 // LOGIN
 router.post('/login', async (req, res) => {
-	// LETS VALIDATE THE DATA BEFORE WE SUBMIT A USER
-	const { error } = loginValidation(req.body);
-	if (error) {
-		return res.status(400).send(error.details[0].message);
-	}
+	// npm packages: passport, passport-jwt, jsonwebtoken
 
-	// Check if Email Exists
-	const user = await UsersModel.findOne({ email: req.body.email });
-	if (!user) {
-		return res.status(400).send('Wrond Email or Password');
-	}
-	// Check if Password is Correct
-	const validPass = await bcryptjs.compare(req.body.password, user.password);
-	if (!validPass) {
-		return res.status(400).send('Wrong Email or Password');
-	}
+	// Step 1. Capture formData (email & password)
+	const formData = {
+		email: req.body.email,
+		password: req.body.password
+	};
 
-	// Create and Assign A JSON WEB TOKEN
-	const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-	res.header('auth-token', token).send('Successfully Logged in!');
-});
+	// Step 2a. In database, find account that matches email
+	UsersModel.findOne({ email: formData.email }, (err, document) => {
+		// Step 2b. If email NOT match, reject the login request
+		if (!document) {
+			res.json({ message: 'Please check email or password' });
+		} else {
+			// Step 3. If there's matching email, examine the document's password
+			// Step 4. Compare the encrypted password in db with incoming password
+			bcryptjs.compare(formData.password, document.password).then((isMatch) => {
+				// Step 5a. If the password matches, generate web token (JWT)
+				if (isMatch === true) {
+					// Step 6. Send the JWT to the client
+					const payload = {
+						id: document.id,
+						email: document.email
+					};
 
-router.get('/signup', (req, res) => {
-	res.send('Sign UP Page');
+					jwt.sign(payload, secret, (err, jsonwebtoken) => {
+						res.json({
+							message: 'Login successful',
+							jsonwebtoken: jsonwebtoken
+						});
+					});
+				} else {
+					// Step 5b. If password NOT match, reject login request
+					res.json({ message: 'Please check email or password' });
+				}
+			});
+		}
+	});
 });
 
 module.exports = router;
