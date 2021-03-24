@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const expressFormData = require('express-form-data');
 const cors = require('cors');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 const eventsRouter = require('./routes/events');
 const usersRouter = require('./routes/users');
@@ -68,6 +69,13 @@ mongoose
 	.catch(() => {
 		console.log('error occured', error);
 	});
+
+// Configure Cloudinary
+cloudinary.config({
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.API_KEY,
+	api_secret: process.env.API_SECRET
+});
 
 // ****************
 // MIDDLEWARE
