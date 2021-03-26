@@ -16,11 +16,20 @@ const EventsSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	host: {
+		type: String
+	},
+	price: {
+		type: String
+	},
+	time: {
+		type: String
+	},
 	eventImg: {
 		type: String
 	},
 	eventDate: {
-		type: String
+		type: Date
 	},
 	dateCreated: {
 		type: Date,

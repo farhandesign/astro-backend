@@ -23,9 +23,12 @@ router.get('/create-event', (req, res) => {
 router.post('/create-event', async (req, res) => {
 	const formData = {
 		name: req.body.name,
+		host: req.body.host,
 		description: req.body.description,
 		address: req.body.address,
 		eventDate: req.body.eventDate,
+		price: req.body.price,
+		time: req.body.time,
 		authorId: req.user
 	};
 	// Create newEventsModel for saving the collection
@@ -67,9 +70,9 @@ router.get('/:eventId', async (req, res) => {
 });
 
 // Delete An Event
-router.delete('/:eventId', async (req, res) => {
+router.delete('/delete/:eventId', async (req, res) => {
 	try {
-		const removedEvent = await EventsModel.remove({ _id: req.params.eventId });
+		const removedEvent = await EventsModel.deleteOne({ _id: req.params.eventId });
 		res.send(removedEvent);
 	} catch (err) {
 		res.json({ message: err });
@@ -77,21 +80,26 @@ router.delete('/:eventId', async (req, res) => {
 });
 
 // Update An Event
-router.patch('/:eventId', async (req, res) => {
+router.patch('/update/:eventId', async (req, res) => {
 	try {
 		const updatedEvent = await EventsModel.updateOne(
 			{ _id: req.params.eventId },
 			{
 				$set: {
+					name: req.body.name,
+					host: req.body.host,
 					description: req.body.description,
 					address: req.body.address,
-					eventImg: req.body.eventImg,
-					eventDate: req.body.eventDate
+					price: req.body.price,
+					eventDate: req.body.eventDate,
+					time: req.body.time
 				}
 			}
 		);
 		res.send(updatedEvent);
-	} catch (err) {}
+	} catch (err) {
+		res.json({ message: err });
+	}
 });
 
 module.exports = router;
