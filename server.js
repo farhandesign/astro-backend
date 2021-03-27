@@ -123,7 +123,7 @@ server.post('/payment/:id', (req, res) => {
 					receipt_email: token.email,
 					description: event.name
 				},
-				{ idempontencyKey }
+				{ idempotencyKey: idempontencyKey }
 			);
 		})
 		.then((result) => res.status(200).json(result))
