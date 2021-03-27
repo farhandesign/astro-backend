@@ -6,6 +6,13 @@ const expressFormData = require('express-form-data');
 const cors = require('cors');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
+
+// Stripe
+const Stripe = require('stripe');
+const stripe = Stripe(process.env.STRIPE_KEY);
+const { v4: uuidv4 } = require('uuid');
+// *********
+
 const eventsRouter = require('./routes/events');
 const usersRouter = require('./routes/users');
 // Create Server Obj
@@ -92,6 +99,35 @@ server.use(expressFormData.parse());
 // Route
 server.get('/', (req, res) => {
 	res.send('<h1>Welcome To Events Website</h1>');
+});
+// Payment Route
+server.post('/payment/:id', (req, res) => {
+	const { event, token } = req.body;
+	console.log(req.body);
+	console.log('EVENT', event);
+	console.log('PRICE', event.price);
+	// This makes sure that the user is not being charged twice
+	const idempontencyKey = uuidv4();
+
+	return stripe.customers
+		.create({
+			email: token.email,
+			source: token.id
+		})
+		.then((customer) => {
+			stripe.charges.create(
+				{
+					amount: event.price * 100,
+					currency: 'aed',
+					customer: customer.id,
+					receipt_email: token.email,
+					description: event.name
+				},
+				{ idempontencyKey }
+			);
+		})
+		.then((result) => res.status(200).json(result))
+		.catch((err) => console.log(err));
 });
 
 // Use Events Routes
