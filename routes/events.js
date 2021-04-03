@@ -7,7 +7,7 @@ const EventsModel = require('../models/EventsModel');
 // Get All the Events
 router.get('/', async (req, res) => {
 	try {
-		const events = await EventsModel.find();
+		const events = await EventsModel.find().limit(6);
 		res.send(events);
 	} catch (err) {
 		res.json({ message: err });
