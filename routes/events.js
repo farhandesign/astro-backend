@@ -4,10 +4,20 @@ const router = express.Router();
 const cloudinary = require('cloudinary').v2;
 const EventsModel = require('../models/EventsModel');
 
-// Get All the Events
+// Get 6 Events
 router.get('/', async (req, res) => {
 	try {
-		const events = await EventsModel.find().limit(6);
+		const events = await EventsModel.find().sort({ $natural: -1 }).limit(6);
+		res.send(events);
+	} catch (err) {
+		res.json({ message: err });
+	}
+});
+
+// Get all Events
+router.get('/all', async (req, res) => {
+	try {
+		const events = await EventsModel.find().sort({ $natural: -1 });
 		res.send(events);
 	} catch (err) {
 		res.json({ message: err });
