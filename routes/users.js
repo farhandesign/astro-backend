@@ -6,7 +6,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 // to read the jsonwebtoken
 const secret = process.env.SECRET;
-
+// c
 const UsersModel = require('../models/UsersModel');
 
 // SIGN-UP
