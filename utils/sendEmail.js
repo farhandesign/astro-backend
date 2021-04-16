@@ -1,13 +1,17 @@
 const nodemailer = require('nodemailer');
+const smtp = require('nodemailer-smtp-transport');
 
 const sendEmail = (options) => {
-	const transporter = nodemailer.createTransport({
-		service: process.env.EMAIL_SERVICE,
-		auth: {
-			user: process.env.EMAIL_USERNAME,
-			pass: process.env.EMAIL_PASSWORD
-		}
-	});
+	const transporter = nodemailer.createTransport(
+		smtp({
+			host: 'in-v3.mailjet.com',
+			port: 2525,
+			auth: {
+				user: process.env.EMAIL_USERNAME,
+				pass: process.env.EMAIL_PASSWORD
+			}
+		})
+	);
 	const mailOptions = {
 		from: process.env.EMAIL_FROM,
 		to: options.to,
