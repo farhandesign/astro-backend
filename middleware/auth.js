@@ -23,6 +23,7 @@ exports.protect = async (req, res, next) => {
 		}
 
 		req.user = user;
+		res.status(200).send(user);
 		next();
 	} catch (error) {
 		return next(new ErrorResponse('Not authorized', 401));
